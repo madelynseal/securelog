@@ -1,8 +1,9 @@
 use crate::conf;
 use crate::models::{SearchResult, SearchType};
 use crate::{constants, sql};
-use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_identity::{Identity, IdentityMiddleware};
+use actix_session::{storage::CookieSessionStore, SessionMiddleware};
+use actix_web::{cookie::Key, post, web, App, HttpResponse, HttpServer, Responder};
 use rustls::{Certificate, PrivateKey, ServerConfig};
 use std::fs::File;
 use std::io::BufReader;
@@ -12,26 +13,15 @@ mod files;
 mod html;
 mod user;
 
-fn gen_id_key() -> [u8; 32] {
-    use rand::prelude::*;
-    let mut key = [0u8; 32];
-    let mut rng = rand::thread_rng();
-    rng.fill_bytes(&mut key);
-
-    key
-}
-
 pub async fn start() -> std::io::Result<()> {
-    let id_key = gen_id_key();
+    let secret_key = Key::generate();
 
     let server = HttpServer::new(move || {
         App::new()
             .wrap(actix_web::middleware::Logger::default())
-            .wrap(IdentityService::new(
-                CookieIdentityPolicy::new(&id_key)
-                    .name("securelog-auth")
-                    .secure(!conf::get_use_https().unwrap_or(false)),
-            ))
+            // Install identity framework
+            .wrap(IdentityMiddleware::default())
+            .wrap(SessionMiddleware::new(CookieSessionStore::default(), secret_key.clone()))
             .wrap(actix_web::middleware::DefaultHeaders::new()
                 .add(
                     ("Content-Security-Policy",
@@ -108,10 +98,11 @@ pub async fn start() -> std::io::Result<()> {
     Ok(())
 }
 
-fn client_logged_in(id: &Identity) -> Option<String> {
-    debug!("client_logged_in: {:?}", id.identity());
-    if let Some(idstr) = id.identity() {
-        idstr
+fn client_logged_in(user: Option<Identity>) -> Option<String> {
+    debug!("client_logged_in: {}", user.is_some());
+    if let Some(user) = user {
+        user.id()
+            .unwrap()
             .strip_prefix("client:")
             .map(|client| client.to_string())
     } else {
@@ -119,10 +110,11 @@ fn client_logged_in(id: &Identity) -> Option<String> {
     }
 }
 
-fn user_logged_in(id: &Identity) -> Option<String> {
-    debug!("user_logged_in: {:?}", id.identity());
-    if let Some(idstr) = id.identity() {
-        idstr
+fn user_logged_in(user: Option<Identity>) -> Option<String> {
+    debug!("user_logged_in: {}", user.is_some());
+    if let Some(user) = user {
+        user.id()
+            .unwrap()
             .strip_prefix("user:")
             .map(|username| username.to_string())
     } else {

@@ -29,7 +29,7 @@ async fn main() {
                 Arg::new("username")
                     .long("username")
                     .short('u')
-                    .takes_value(true)
+                    .num_args(1)
                     .required(false),
             ),
         )
@@ -39,11 +39,11 @@ async fn main() {
                 .short('c')
                 .long("config")
                 .required(false)
-                .takes_value(true),
+                .num_args(1),
         )
         .get_matches();
 
-    if let Some(loc) = matches.value_of("config") {
+    if let Some(loc) = matches.get_one::<String>("config") {
         std::env::set_var("CONFIG_LOCATION", loc);
     }
 
@@ -72,7 +72,7 @@ async fn main() {
     }
 
     if let Some(smatches) = matches.subcommand_matches("create-user") {
-        let username = match smatches.value_of("username") {
+        let username = match smatches.get_one::<String>("username") {
             Some(username) => username.to_string(),
             None => prompt_user_input("Username: ").unwrap(),
         };
