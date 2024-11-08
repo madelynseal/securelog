@@ -1,0 +1,7 @@
+server="https://example.com"
+token="blah"
+id="random"
+name="exampleclient"
+log_dir="logs/"
+log_level="info"
+log_stdout=true

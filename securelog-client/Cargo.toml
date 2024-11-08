@@ -1,0 +1,42 @@
+[package]
+name = "securelog-client"
+authors = ["Madelyn Seal <winterberry42@protonmail.com>"]
+version = "0.1.0"
+edition = "2021"
+description = "SecureLog Client"
+license = "gpl-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package.metadata.deb]
+depends="$auto"
+assets = [
+    ["target/release/securelog-client", "/usr/bin/securelog-client", "755"],
+    ["example-client.toml", "/etc/securelog/example-client.toml", "644"]
+]
+maintainer-scripts="debian/"
+systemd-units={enable=true}
+
+[dependencies]
+reqwest={version="0.11", features=["json", "blocking", "cookies"]}
+config={version="0.13", features=["toml"]}
+toml="0.5"
+clap={version="3", features=["cargo"]}
+
+lazy_static="1"
+anyhow="1"
+thiserror="1"
+
+log="0.4"
+flexi_logger="0.22"
+
+serde="1"
+serde_derive="1"
+serde_json="1"
+chrono={version="0.4", features=["serde"]}
+regex="1.5"
+wildmatch="2.1"
+rpassword="6"
+
+[build-dependencies]
+vergen="7"

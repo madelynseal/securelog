@@ -1,0 +1,11 @@
+#!/bin/bash
+set -x
+adduser --system securelog
+usermod -aG adm securelog
+usermod -aG www-data securelog
+usermod -aG systemd-journal securelog
+
+mkdir /var/log/securelog/server/ -p
+chown securelog /var/log/securelog/ -R
+
+#DEBHELPER#

@@ -1,0 +1,23 @@
+version: "2.2"
+services:
+  securelog:
+    build: .
+    ports: 
+      - "443:443"
+    volumes:
+      - ./etc:/etc/securelog/
+      - ./log:/var/log/securelog/
+    environment:
+      - SERVER_CERT=/etc/securelog/cert.pem
+      - SERVER_KEY=/etc/securelog/key.pem
+      - SERVER_LISTEN=0.0.0.0:443
+      - SERVER_PG_PARAMS="host=mydb dbname=securelog user=myuser password=secret"
+      - SERVER_LOGDIR=/var/log/securelog/
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: securelog
+      POSTGRES_PASSWORD: mysecret
+      POSTGRES_DB: securelog
+      

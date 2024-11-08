@@ -1,0 +1,12 @@
+[Unit]
+Description=Securelog Client
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/securelog-client -c /etc/securelog/client.toml
+Type=simple
+User=securelog
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

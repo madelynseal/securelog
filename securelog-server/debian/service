@@ -1,0 +1,12 @@
+[Unit]
+Description=Securelog Server
+After=postgresql.service network.target
+
+[Service]
+ExecStart=/usr/bin/securelog-server -c /etc/securelog/server.toml
+Type=simple
+User=securelog
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

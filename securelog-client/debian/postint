@@ -1,0 +1,9 @@
+#!/bin/sh
+
+useradd -r -d /etc/securelog securelog
+# add to group adm for log access
+usermod -aG adm securelog
+usermod -aG www-data securelog
+usermod -aG systemd-journal securelog
+
+#DEBHELPER#

@@ -1,0 +1,10 @@
+cert="servercert.pem"
+key="serverkey.pem"
+listen="127.0.0.1:8443"
+# See https://docs.rs/postgres/0.19.2/postgres/config/struct.Config.html
+pg_params="host=localhost dbname=securelog user=myuser password='mysecret'"
+https="true"
+
+log_dir="logs"
+log_level="debug"
+log_stdout="true"
