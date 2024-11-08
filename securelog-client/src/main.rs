@@ -36,11 +36,11 @@ fn main() {
                 .short('c')
                 .long("config")
                 .required(false)
-                .takes_value(true),
+                .num_args(1),
         )
         .get_matches();
 
-    if let Some(loc) = matches.value_of("config") {
+    if let Some(loc) = matches.get_one::<String>("config") {
         std::env::set_var("CONFIG_LOCATION", loc);
     }
     conf::initialize_config().unwrap();

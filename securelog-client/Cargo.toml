@@ -21,11 +21,11 @@ systemd-units={enable=true}
 reqwest={version="0.12", features=["json", "blocking", "cookies"]}
 config={version="0.14", features=["toml"]}
 toml="0.8"
-clap={version="3", features=["cargo"]}
+clap={version="4", features=["cargo"]}
 
 lazy_static="1"
 anyhow="1"
-thiserror="1"
+thiserror="2"
 
 log="0.4"
 flexi_logger="0.29"
@@ -39,4 +39,5 @@ wildmatch="2.1"
 rpassword="7"
 
 [build-dependencies]
-vergen="7"
+vergen = { version = "9.0.0", features = ["build", "cargo", "rustc", "si"] }
+vergen-git2 = { version = "1.0.0", features = ["build", "cargo", "rustc", "si"] }
