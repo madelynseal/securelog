@@ -19,6 +19,8 @@ pub fn read_config() -> Result<Config, config::ConfigError> {
 
     if let Ok(loc) = std::env::var("CONFIG_LOCATION") {
         builder = builder.add_source(config::File::with_name(&loc));
+    } else {
+        builder = builder.add_source(config::File::with_name("server.toml"));
     }
 
     let settings = builder.build()?;

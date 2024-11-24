@@ -19,7 +19,6 @@ async fn api_user_login(
     request: HttpRequest,
     params: web::Form<AuthLogin>,
     query: web::Query<AuthLoginQuery>,
-    id: Identity,
 ) -> actix_web::Result<HttpResponse> {
     if sql::user::user_login(&params.username, &params.password).await? {
         Identity::login(&request.extensions(), format!("user:{}", &params.username))?;
@@ -44,7 +43,7 @@ async fn api_user_login(
     }
 }
 
-#[post("/api/user/logout")]
+#[get("/api/user/logout")]
 async fn api_user_logout(id: Identity) -> impl Responder {
     id.logout();
 
